@@ -7,6 +7,7 @@ module.exports = () => {
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false,
+      useUnifiedTopology: true,
     }, (err) => {
       if (err) rej(err);
       console.log('Connected to mongoDB');
