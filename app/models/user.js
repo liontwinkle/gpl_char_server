@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 20,
     required: [true, 'User name is missing'],
     validate: {
-      validator: v => /^[a-zA-Z0-9-_]+$/.test(v),
+      validator: v => /^[a-zA-Z][a-zA-Z0-9-_]+?$/.test(v),
       msg: 'Name is badly formatted'
     }
   },

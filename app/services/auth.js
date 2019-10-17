@@ -35,7 +35,7 @@ exports.loginUser = async (credential) => {
   const user = await userModel
     .findOne({ email: credential.email })
     .exec();
-  if (!user) throw new apiError('User does not exists');
+  if (!user) throw new apiError('User does not exist');
 
   const isPasswordsMatch = await user.isPasswordsMatch(credential.password);
   if (!isPasswordsMatch) throw new apiError('Passwords do not match', 401);
