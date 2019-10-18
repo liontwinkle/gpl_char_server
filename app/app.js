@@ -1,23 +1,27 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const cfg = require('./config');
-const routes = require('./routes');
 const mongoInit = require('./mongoose');
-const app = express();
+const graphqlHTTP = require('express-graphql');
+const { schema, rootValue } = require('./graphql/');
+const cfg = require('./config');
+const ApiError = require('./utils/apiError');
 
 const init = async () => {
   await mongoInit();
 
-  app.use(helmet());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
-  app.use(cors({
-    origin: true,
-    credentials: true
+  const app = express();
+  rootValue
+  app.use('/graphql', graphqlHTTP({
+    schema,
+    rootValue,
+    graphiql: true,
+    customFormatErrorFn: (error) => {
+      const { originalError } = error;
+      if (originalError instanceof ApiError) {
+        return error.originalError;
+      }
+      return error;
+    }
   }));
-  app.use(routes);
   app.listen(cfg.port, () => console.log(`Going on ${cfg.port}`));
 };
 
