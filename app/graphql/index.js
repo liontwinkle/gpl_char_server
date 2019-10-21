@@ -1,19 +1,17 @@
-const { buildSchema } = require('graphql');
-const { mergeTypes } = require('merge-graphql-schemas');
-const authSchema = require('./schema/auth');
-const authResolver = require('./resolvers/auth');
+const authSchema = require("./schema/auth");
+const authResolver = require("./resolvers/auth");
+const ApiError = require("../utils/apiError");
+const { isProd } = require("../config");
 
-const schemas = [
-  `type Query {
-    dummy: String
-  }`,
-  authSchema
-];
+const typeDefs = [authSchema];
 
-const rootValue = {
-  ...authResolver
+const resolvers = [authResolver];
+
+const formatError = err => {
+  if (err.originalError instanceof ApiError) {
+    return { ...err.originalError };
+  }
+  return isProd ? { message: err.message } : err;
 };
 
-const schema = buildSchema(mergeTypes(schemas));
-
-module.exports = { schema, rootValue };
+module.exports = { typeDefs, resolvers, formatError };

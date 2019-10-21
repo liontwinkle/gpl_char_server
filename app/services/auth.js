@@ -12,7 +12,7 @@ exports.registerUser = async (user) => {
   } catch (err) {
     const isMongoError = err.name === 'MongoError';
     if (isMongoError && err.code === 11000) {
-      throw new apiError('The email is already in use');
+      throw new apiError({ message: 'The email is already in use' });
     }
     throw err;
   }
@@ -35,10 +35,12 @@ exports.loginUser = async (credential) => {
   const user = await userModel
     .findOne({ email: credential.email })
     .exec();
-  if (!user) throw new apiError('User does not exist');
+  if (!user) throw new apiError({ message: 'User does not exist '});
 
   const isPasswordsMatch = await user.isPasswordsMatch(credential.password);
-  if (!isPasswordsMatch) throw new apiError('Passwords do not match', 401);
+  if (!isPasswordsMatch) {
+    throw new apiError({ message: 'Passwords do not match', status: 401 });
+  }
 
   const token = exports.genJwt({ userId: user._id });
   return authRes({ user, token });
@@ -47,7 +49,9 @@ exports.loginUser = async (credential) => {
 exports.verifyUser = async (token) => {
   const payload = await exports.getPayloadFromToken(token);
   const user = await exports.findUserById(payload.id);
-  if (!user) throw new apiError('User is not found', 401);
+  if (!user)  {
+    throw new apiError({ message: 'User is not found', status: 401 });
+  }
 
   return authRes({ user });
 };
@@ -61,14 +65,16 @@ exports.getPayloadFromToken = async (token) => {
     return await exports.verifyToken(token);
   }
   catch (err) {
-    throw new apiError(err.message, 401);
+    throw new apiError({ message: err.message, status: 401 });
   }
 }
 
 exports.tokenUpdate = async (token) => {
   const payload = await exports.getPayloadFromToken(token);
   const user = await exports.findUserById(payload.id);
-  if (!user) throw new apiError('User is not found', 401);
+  if (!user) {
+    throw new apiError({ message: 'User is not found', status: 401 });
+  }
 
   const newToken = exports.genJwt({
     userId: payload.id,

@@ -1,10 +1,20 @@
-const authService = require('../../services/auth');
+const authService = require("../../services/auth");
 
 module.exports = {
-  registerUser({ user }) {
-    return authService.registerUser(user);
+  Mutation: {
+    registerUser(_, { user }) {
+      return authService.registerUser(user);
+    },
   },
-  loginUser({ credentials }) {
-    return authService.loginUser(credentials);
+  Query: {
+    loginUser: (_, { credentials }) => {
+      return authService.loginUser(credentials);
+    },
+    verifyUser(_, { token }) {
+      return authService.verifyUser(token);
+    },
+    updateUserToken(_, { token }) {
+      return authService.tokenUpdate(token);
+    },
   },
 };
