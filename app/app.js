@@ -9,7 +9,6 @@ const init = async () => {
   await mongoInit();
 
   const app = express();
-  rootValue
   app.use('/graphql', graphqlHTTP({
     schema,
     rootValue,
