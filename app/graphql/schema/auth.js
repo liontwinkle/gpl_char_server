@@ -16,7 +16,7 @@ module.exports = gql`
     name: String!
     email: String!
   }
-    
+
   type UserWithToken {
     user: UserWithoutPassword!
     token: String!

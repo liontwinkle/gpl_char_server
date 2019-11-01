@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'User name is missing'],
     validate: {
       validator: v => /^[a-zA-Z][a-zA-Z0-9-_]+?$/.test(v),
-      msg: 'Name is badly formatted'
-    }
+      msg: 'Name is badly formatted',
+    },
   },
   email: {
     type: String,
@@ -20,14 +20,14 @@ const userSchema = new mongoose.Schema({
     required: [true, 'User email is missing'],
     validate: {
       validator: emailValidator,
-      msg: 'Email is incorrect'
+      msg: 'Email is incorrect',
     },
   },
   password: {
     type: String,
     minlength: 8,
-    required: [true, 'User password is missing']
-  }
+    required: [true, 'User password is missing'],
+  },
 });
 
 userSchema.methods = {
@@ -36,10 +36,10 @@ userSchema.methods = {
   },
   isPasswordsMatch(password) {
     return bcrypt.compare(password, this.password);
-  }
+  },
 };
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   if (this.isNew) {
     this.password = await this.genHashForPassword();
   }
@@ -50,5 +50,5 @@ const userModel = mongoose.model('user', userSchema);
 
 module.exports = {
   userSchema,
-  userModel
+  userModel,
 };

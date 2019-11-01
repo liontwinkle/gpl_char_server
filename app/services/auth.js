@@ -4,7 +4,7 @@ const userModel = require('../models/user').userModel;
 const apiError = require('../utils/apiError');
 const authRes = require('../responses/auth').authRes;
 
-exports.registerUser = async (user) => {
+exports.registerUser = async user => {
   const newUser = new userModel(user);
 
   try {
@@ -22,54 +22,50 @@ exports.registerUser = async (user) => {
 };
 
 exports.genJwt = ({ userId, expiresIn = '14d' }) => {
-  return jwt.sign(
-    { id: userId },
-    cfg.secret,
-    { expiresIn }
-  );
+  return jwt.sign({ id: userId }, cfg.secret, { expiresIn });
 };
 
-exports.loginUser = async (credential) => {
+exports.loginUser = async credential => {
   if (!credential) throw new apiError();
 
-  const user = await userModel
-    .findOne({ email: credential.email })
-    .exec();
-  if (!user) throw new apiError({ message: 'User does not exist '});
+  const user = await userModel.findOne({ email: credential.email }).exec();
+  if (!user) throw new apiError({ message: 'User does not exist' });
 
   const isPasswordsMatch = await user.isPasswordsMatch(credential.password);
   if (!isPasswordsMatch) {
-    throw new apiError({ message: 'Passwords do not match', status: 401 });
+    throw new apiError({
+      message: 'Passwords do not match',
+      status: 401,
+    });
   }
 
   const token = exports.genJwt({ userId: user._id });
   return authRes({ user, token });
 };
 
-exports.verifyUser = async (token) => {
+exports.verifyUser = async token => {
   const payload = await exports.getPayloadFromToken(token);
   const user = await exports.findUserById(payload.id);
-  if (!user)  {
+  if (!user) {
     throw new apiError({ message: 'User is not found', status: 401 });
   }
 
   return authRes({ user });
 };
 
-exports.verifyToken = (token) => jwt.verify(token, cfg.secret);
+exports.verifyToken = token => jwt.verify(token, cfg.secret);
 
-exports.findUserById = (id) => userModel.findById(id).exec();
+exports.findUserById = id => userModel.findById(id).exec();
 
-exports.getPayloadFromToken = async (token) => {
+exports.getPayloadFromToken = async token => {
   try {
     return await exports.verifyToken(token);
-  }
-  catch (err) {
+  } catch (err) {
     throw new apiError({ message: err.message, status: 401 });
   }
-}
+};
 
-exports.tokenUpdate = async (token) => {
+exports.tokenUpdate = async token => {
   const payload = await exports.getPayloadFromToken(token);
   const user = await exports.findUserById(payload.id);
   if (!user) {
@@ -78,7 +74,7 @@ exports.tokenUpdate = async (token) => {
 
   const newToken = exports.genJwt({
     userId: payload.id,
-    expiresIn: '1h'
+    expiresIn: '1h',
   });
 
   return authRes({ token: newToken });

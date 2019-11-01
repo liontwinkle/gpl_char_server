@@ -12,7 +12,7 @@ const init = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    formatError
+    formatError,
   });
   server.applyMiddleware({ app });
   app.listen({ port: cfg.port }, () => console.log(`Going on ${cfg.port}`));

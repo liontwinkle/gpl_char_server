@@ -1,7 +1,7 @@
-const authSchema = require("./schema/auth");
-const authResolver = require("./resolvers/auth");
-const ApiError = require("../utils/apiError");
-const { isProd } = require("../config");
+const authSchema = require('./schema/auth');
+const authResolver = require('./resolvers/auth');
+const ApiError = require('../utils/apiError');
+const { isProd } = require('../config');
 
 const typeDefs = [authSchema];
 
