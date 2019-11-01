@@ -5,8 +5,8 @@ const ApiError = require('../utils/apiError');
 const authRes = require('../responses/auth').authRes;
 
 exports.registerUser = async user => {
+  const newUser = new userModel(user);
   try {
-    const newUser = new userModel(user);
     await newUser.save();
   } catch (err) {
     const isMongoError = err.name === 'MongoError';
