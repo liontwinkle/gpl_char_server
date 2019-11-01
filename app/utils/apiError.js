@@ -1,9 +1,9 @@
-class apiError extends Error {
-  constructor({ message = '', status = 400 } = {}) {
+class ApiError extends Error {
+  constructor({ message = 'Something went wrong', status = 500 } = {}) {
     super();
-    if (message) this.message = message;
+    this.message = message;
     this.status = status;
   }
 }
 
-module.exports = apiError;
+module.exports = ApiError;

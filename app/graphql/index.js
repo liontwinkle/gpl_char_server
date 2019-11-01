@@ -11,7 +11,7 @@ const formatError = err => {
   if (err.originalError instanceof ApiError) {
     return { ...err.originalError };
   }
-  return isProd ? { message: err.message } : err;
+  return isProd ? new ApiError() : err;
 };
 
 module.exports = { typeDefs, resolvers, formatError };
