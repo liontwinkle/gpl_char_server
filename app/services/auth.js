@@ -75,7 +75,7 @@ exports.getPayloadFromToken = async token => {
   try {
     return await exports.verifyToken(token);
   } catch (err) {
-    throw new ApiError({ message: err.message, status: 400 });
+    throw new ApiError({ message: 'Invalid token', status: 400 });
   }
 };
 
