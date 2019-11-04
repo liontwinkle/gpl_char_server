@@ -8,6 +8,7 @@ const typeDefs = [authSchema];
 const resolvers = [authResolver];
 
 const formatError = err => {
+  console.log('Erorr occurred:', err);
   if (err.originalError instanceof ApiError) {
     return { ...err.originalError };
   }
