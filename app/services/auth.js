@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 const cfg = require('../config');
-const userModel = require('../models/user').userModel;
+const userModel = require('../mongoose/models/user').userModel;
 const ApiError = require('../utils/apiError');
 const authRes = require('../responses/auth').authRes;
+
+const { defaultTokenExpiration, onUpdateTokenExpiration } = cfg.token.expires;
 
 exports.registerUser = async user => {
   const newUser = new userModel(user);
@@ -33,7 +35,7 @@ exports.registerUser = async user => {
   return authRes({ user: newUser, token });
 };
 
-exports.genJwt = ({ userId, expiresIn = '14d' }) => {
+exports.genJwt = ({ userId, expiresIn = defaultTokenExpiration }) => {
   return jwt.sign({ id: userId }, cfg.secret, { expiresIn });
 };
 
@@ -88,7 +90,7 @@ exports.tokenUpdate = async token => {
 
   const newToken = exports.genJwt({
     userId: payload.id,
-    expiresIn: '1h',
+    expiresIn: onUpdateTokenExpiration,
   });
 
   return authRes({ token: newToken });
