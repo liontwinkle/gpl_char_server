@@ -4,7 +4,7 @@ const userModel = require('../mongoose/models/user').userModel;
 const ApiError = require('../utils/apiError');
 const authRes = require('../responses/auth').authRes;
 
-const { defaultTokenExpiration, onUpdateTokenExpiration } = cfg.token.expires;
+const { defaultTokenExpiration, onUpdateTokenExpiration } = cfg.token;
 
 exports.registerUser = async user => {
   const newUser = new userModel(user);
