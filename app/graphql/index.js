@@ -1,14 +1,9 @@
-const { mergeTypes } = require('merge-graphql-schemas');
-const authSchema = require('./schema/auth');
-const authResolver = require('./resolvers/auth');
-const chatsSchema = require('./schema/chats');
-const chatsResolver = require('./resolvers/chats');
-const ApiError = require('../utils/apiError');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+const ApiError = require('../utils/ApiError');
+const context = require('./context');
+const { subscriptions } = require('./subscriptions');
 const { isProd } = require('../config');
-
-const typeDefs = mergeTypes([authSchema, chatsSchema]);
-
-const resolvers = [authResolver, chatsResolver];
 
 const formatError = err => {
   console.log('Erorr occurred:', err);
@@ -18,4 +13,10 @@ const formatError = err => {
   return isProd ? new ApiError() : err;
 };
 
-module.exports = { typeDefs, resolvers, formatError };
+module.exports = {
+  typeDefs,
+  resolvers,
+  formatError,
+  context,
+  subscriptions,
+};
