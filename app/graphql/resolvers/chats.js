@@ -15,8 +15,11 @@ module.exports = {
     sendMessage: (_, { message }) => {
       pubsub.publish(MESSAGE_SENT, { id: `id-${Math.random()}`, message });
     },
-    createChat: withUser((_, { chatSettings }, ctx) => {
-      return chatService.createChat(chatSettings, ctx.user);
+    createChat: withUser((_, { chatSettings }, { user: { id } }) => {
+      return chatService.createChat(chatSettings, id);
+    }),
+    deleteChat: withUser((_, { chatId }, { user: { id } }) => {
+      return chatService.deleteChat(chatId, id);
     }),
   },
 };

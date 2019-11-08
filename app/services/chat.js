@@ -15,8 +15,8 @@ const chatRes = chat => {
   return res;
 };
 
-exports.createChat = async (chatSettings, userData) => {
-  const newChat = new chatModel({ ...chatSettings, creator: userData.id });
+exports.createChat = async (chatSettings, userId) => {
+  const newChat = new chatModel({ ...chatSettings, creator: userId });
   try {
     await newChat.save();
   } catch (err) {
@@ -35,4 +35,15 @@ exports.findChatById = (id, { withCreator = true } = {}) => {
   }
 
   return query.exec();
+};
+
+exports.deleteChat = async (chatId, userId) => {
+  try {
+    const res = await chatModel
+      .deleteOne({ _id: chatId, creator: userId })
+      .exec();
+    return !!res.deletedCount;
+  } catch (err) {
+    throw new ApiError({ message: 'Unable to delete chat', status: 400 });
+  }
 };

@@ -7,7 +7,8 @@ module.exports = gql`
 
   type Mutation {
     sendMessage(message: String!): Boolean
-    createChat(chatSettings: ChatInput!): ChatRes
+    createChat(chatSettings: ChatInput!): ChatRes!
+    deleteChat(chatId: String!): Boolean!
   }
 
   type MessageSentRes {
