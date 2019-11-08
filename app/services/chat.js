@@ -1,4 +1,4 @@
-const { chatModel } = require('../mongoose/models');
+const { chatModel, chatMessageModel } = require('../mongoose/models');
 const ApiError = require('../utils/ApiError');
 
 const chatRes = chat => {
@@ -45,5 +45,20 @@ exports.deleteChat = async (chatId, userId) => {
     return !!res.deletedCount;
   } catch (err) {
     throw new ApiError({ message: 'Unable to delete chat', status: 400 });
+  }
+};
+
+exports.sendMessage = async ({ chatId, message }, userId) => {
+  try {
+    const newMessage = new chatMessageModel({ message, from: userId });
+    const res = await chatModel
+      .findOneAndUpdate({ _id: chatId }, { $push: { messages: newMessage } })
+      .exec();
+    return !!res;
+  } catch (err) {
+    throw new ApiError({
+      message: 'Unable to add message to the chat',
+      status: 400,
+    });
   }
 };

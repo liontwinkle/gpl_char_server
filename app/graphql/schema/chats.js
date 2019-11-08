@@ -6,9 +6,9 @@ module.exports = gql`
   }
 
   type Mutation {
-    sendMessage(message: String!): Boolean
     createChat(chatSettings: ChatInput!): ChatRes!
     deleteChat(chatId: String!): Boolean!
+    sendMessage(data: SendMessageInput!): Boolean!
   }
 
   type MessageSentRes {
@@ -29,5 +29,10 @@ module.exports = gql`
   type ChatCreator {
     id: String!
     name: String!
+  }
+
+  input SendMessageInput {
+    message: String!
+    chatId: String!
   }
 `;

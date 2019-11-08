@@ -12,14 +12,17 @@ module.exports = {
     },
   },
   Mutation: {
-    sendMessage: (_, { message }) => {
-      pubsub.publish(MESSAGE_SENT, { id: `id-${Math.random()}`, message });
-    },
+    // sendMessage: (_, { message }) => {
+    //   pubsub.publish(MESSAGE_SENT, { id: `id-${Math.random()}`, message });
+    // },
     createChat: withUser((_, { chatSettings }, { user: { id } }) => {
       return chatService.createChat(chatSettings, id);
     }),
     deleteChat: withUser((_, { chatId }, { user: { id } }) => {
       return chatService.deleteChat(chatId, id);
+    }),
+    sendMessage: withUser((_, { data }, { user: { id } }) => {
+      return chatService.sendMessage(data, id);
     }),
   },
 };
