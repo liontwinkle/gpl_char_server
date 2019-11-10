@@ -50,7 +50,7 @@ exports.loginUser = async credential => {
   const isPasswordsMatch = await user.isPasswordsMatch(credential.password);
   if (!isPasswordsMatch) {
     throw new ApiError({
-      message: 'Passwords do not match',
+      message: 'Password does not match',
       status: 401,
     });
   }
