@@ -1,4 +1,5 @@
 const { PubSub } = require('apollo-server');
+const { ApiError } = require('../utils');
 
 exports.pubsub = new PubSub();
 
