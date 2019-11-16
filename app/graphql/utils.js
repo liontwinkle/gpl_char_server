@@ -1,4 +1,5 @@
 const ApiError = require('../utils/ApiError');
+const graphqlFields = require('graphql-fields');
 
 exports.withUser = resolver => (...args) => {
   const ctx = args[2];
@@ -9,3 +10,10 @@ exports.withUser = resolver => (...args) => {
     });
   return resolver(...args);
 };
+
+exports.parseQueryFields = ast =>
+  graphqlFields(
+    ast,
+    {},
+    { processArguments: true, excludedFields: ['__typename'] }
+  );

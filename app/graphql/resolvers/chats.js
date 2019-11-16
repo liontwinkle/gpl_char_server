@@ -1,6 +1,6 @@
 const { pubsub } = require('../subscriptions');
 const chatService = require('../../services/chat');
-const { withUser } = require('../utils');
+const { withUser, parseQueryFields } = require('../utils');
 
 const MESSAGE_SENT = 'MESSAGE_SENT';
 
@@ -23,6 +23,12 @@ module.exports = {
     }),
     sendMessage: withUser((_, { data }, { user: { id } }) => {
       return chatService.sendMessage(data, id);
+    }),
+  },
+  Query: {
+    chats: withUser((_, data, ctx, ast) => {
+      const fields = parseQueryFields(ast);
+      return chatService.getChats({ fields });
     }),
   },
 };

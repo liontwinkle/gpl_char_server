@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const cfg = require('../config');
-const userModel = require('../mongoose/models/user').userModel;
+const { userModel } = require('../mongoose/models/user');
 const ApiError = require('../utils/ApiError');
 const authRes = require('../responses/auth').authRes;
 
