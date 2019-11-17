@@ -58,12 +58,12 @@ exports.sendMessage = async ({ chatId, message }, userId) => {
 
 exports.getChats = async ({ fields }) => {
   try {
-    const withChatCreator = getFields(get(fields, 'chats.creator'));
-    const withMessages = getFields(get(fields, 'chats.messages'), {
+    const withChatCreator = getFields(get(fields, 'creator'));
+    const withMessages = getFields(get(fields, 'messages'), {
       asArray: true,
     });
-    const withMessageFrom = getFields(get(fields, 'chats.messages.from'));
-    const withChatFields = getFields(fields.chats, {
+    const withMessageFrom = getFields(get(fields, 'messages.from'));
+    const withChatFields = getFields(fields, {
       nestedFields: { messages: withMessages },
     });
     const query = chatModel.find({}, withChatFields);
@@ -72,7 +72,7 @@ exports.getChats = async ({ fields }) => {
 
     const chats = await query.lean().exec();
 
-    return { chats: chats.map(chatRes) };
+    return chats.map(chatRes);
   } catch (err) {
     throw new ApiError({ message: 'Unable to get all chats', status: 500 });
   }

@@ -13,17 +13,13 @@ module.exports = gql`
   }
 
   type Query {
-    chats: ChatsRes!
+    chats: [ChatRes!]!
   }
 
   # enum ChatActions {
   #   ADDED
   #   DELETED
   # }
-
-  type ChatsRes {
-    chats: [ChatRes!]!
-  }
 
   # type ChatChangesRes {
   #   action: ChatActions!
@@ -44,6 +40,7 @@ module.exports = gql`
     name: String!
     creator: ChatCreator!
     messages: [ChatMessage!]!
+    createdAt: String!
   }
 
   type ChatMessage {
