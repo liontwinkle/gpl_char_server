@@ -3,7 +3,7 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
   type Subscription {
     messageSent: MessageSentRes!
-    # chatsChanges: ChatChangesRes!
+    chatList: ChatListRes!
   }
 
   type Mutation {
@@ -16,15 +16,15 @@ module.exports = gql`
     chats: [ChatRes!]!
   }
 
-  # enum ChatActions {
-  #   ADDED
-  #   DELETED
-  # }
+  enum ChatActions {
+    ADDED
+    DELETED
+  }
 
-  # type ChatChangesRes {
-  #   action: ChatActions!
-  #   chat: ChatRes!
-  # }
+  type ChatListRes {
+    type: ChatActions!
+    chat: ChatRes!
+  }
 
   type MessageSentRes {
     message: String!

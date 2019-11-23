@@ -16,3 +16,8 @@ exports.subscriptions = {
     context.initPromise.then(d => d);
   },
 };
+
+exports.actions = {
+  MESSAGE_SENT: 'MESSAGE_SENT',
+  CHAT_ADDED: 'CHAT_ADDED',
+};
