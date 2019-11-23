@@ -13,7 +13,7 @@ exports.createChat = async (chatSettings, userId) => {
   try {
     await newChat.save();
   } catch (err) {
-    throw new ApiError({ message: 'Unable to create a chat', message: 400 });
+    throw new ApiError({ message: 'Unable to create a chat', status: 400 });
   }
   const chat = await exports.findChatById(newChat._id);
 
