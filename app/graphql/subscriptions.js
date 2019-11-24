@@ -20,4 +20,5 @@ exports.subscriptions = {
 exports.actions = {
   MESSAGE_SENT: 'MESSAGE_SENT',
   CHAT_ADDED: 'CHAT_ADDED',
+  CHAT_DELETED: 'CHAT_DELETED',
 };

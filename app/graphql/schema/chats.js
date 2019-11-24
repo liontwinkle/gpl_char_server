@@ -21,9 +21,16 @@ module.exports = gql`
     DELETED
   }
 
-  type ChatListRes {
+  union ChatListRes = ChatListChatAdded | ChatListChatDeleted
+
+  type ChatListChatAdded {
     type: ChatActions!
     chat: ChatRes!
+  }
+
+  type ChatListChatDeleted {
+    type: ChatActions!
+    chatId: String!
   }
 
   type MessageSentRes {

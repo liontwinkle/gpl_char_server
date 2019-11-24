@@ -4,6 +4,18 @@ const { withUser, parseQueryFields } = require('../utils');
 const { actions } = require('../subscriptions');
 
 module.exports = {
+  ChatListRes: {
+    __resolveType(obj) {
+      switch (obj.type) {
+        case 'ADDED':
+          return 'ChatListChatAdded';
+        case 'DELETED':
+          return 'ChatListChatDeleted';
+        default:
+          return null;
+      }
+    },
+  },
   Subscription: {
     messageSent: {
       resolve: payload => payload,
@@ -11,7 +23,8 @@ module.exports = {
     },
     chatList: {
       resolve: payload => payload,
-      subscribe: () => pubsub.asyncIterator([actions.CHAT_ADDED]),
+      subscribe: () =>
+        pubsub.asyncIterator([actions.CHAT_ADDED, actions.CHAT_DELETED]),
     },
   },
   Mutation: {
@@ -24,7 +37,9 @@ module.exports = {
       return chat;
     }),
     deleteChat: withUser((_, { chatId }, { user: { id } }) => {
-      return chatService.deleteChat(chatId, id);
+      const isDeleted = chatService.deleteChat(chatId, id);
+      pubsub.publish(actions.CHAT_DELETED, { type: 'DELETED', chatId });
+      return isDeleted;
     }),
     sendMessage: withUser((_, { data }, { user: { id } }) => {
       return chatService.sendMessage(data, id);
