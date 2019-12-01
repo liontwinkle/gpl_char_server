@@ -56,24 +56,43 @@ exports.sendMessage = async ({ chatId, message }, userId) => {
   }
 };
 
-exports.getChats = async ({ fields }) => {
+const buildChatsQuery = ({ fields, createQuery }) => {
+  const withChatCreator = getFields(get(fields, 'creator'));
+  const withMessages = getFields(get(fields, 'messages'), {
+    asArray: true,
+  });
+  const withMessageFrom = getFields(get(fields, 'messages.from'));
+  const withChatFields = getFields(fields, {
+    nestedFields: { messages: withMessages },
+  });
+  const query = createQuery(withChatFields);
+  if (withChatCreator) query.populate('creator', withChatCreator);
+  if (withMessageFrom) query.populate('messages.from', withMessageFrom);
+  return query;
+};
+
+exports.getChatsList = async ({ fields }) => {
   try {
-    const withChatCreator = getFields(get(fields, 'creator'));
-    const withMessages = getFields(get(fields, 'messages'), {
-      asArray: true,
+    const query = buildChatsQuery({
+      fields,
+      createQuery: withChatFields => chatModel.find({}, withChatFields),
     });
-    const withMessageFrom = getFields(get(fields, 'messages.from'));
-    const withChatFields = getFields(fields, {
-      nestedFields: { messages: withMessages },
-    });
-    const query = chatModel.find({}, withChatFields);
-    if (withChatCreator) query.populate('creator', withChatCreator);
-    if (withMessageFrom) query.populate('messages.from', withMessageFrom);
-
     const chats = await query.lean().exec();
-
-    return chats.map(chatRes);
+    return { list: chats.map(chatRes) };
   } catch (err) {
     throw new ApiError({ message: 'Unable to get all chats', status: 500 });
+  }
+};
+
+exports.getOneChat = async ({ fields, chatId }) => {
+  try {
+    const query = buildChatsQuery({
+      fields,
+      createQuery: withChatFields => chatModel.findById(chatId, withChatFields),
+    });
+    const chat = await query.lean().exec();
+    return chatRes(chat);
+  } catch (err) {
+    throw new ApiError({ message: 'Unable to get a chat', status: 500 });
   }
 };

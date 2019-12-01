@@ -13,12 +13,18 @@ module.exports = gql`
   }
 
   type Query {
-    chats: [ChatRes!]!
+    chats(chatId: String): ChatsQueryRes!
   }
 
   enum ChatActions {
     ADDED
     DELETED
+  }
+
+  union ChatsQueryRes = ChatsRes | ChatRes
+
+  type ChatsRes {
+    list: [ChatRes!]!
   }
 
   union ChatListRes = ChatListChatAdded | ChatListChatDeleted

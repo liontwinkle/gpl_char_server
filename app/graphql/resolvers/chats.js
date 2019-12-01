@@ -16,6 +16,14 @@ module.exports = {
       }
     },
   },
+  ChatsQueryRes: {
+    __resolveType(obj) {
+      if (Array.isArray(obj.list)) {
+        return 'ChatsRes';
+      }
+      return 'ChatRes';
+    },
+  },
   Subscription: {
     messageSent: {
       resolve: payload => payload,
@@ -46,9 +54,12 @@ module.exports = {
     }),
   },
   Query: {
-    chats: withUser((_, data, ctx, ast) => {
+    chats: withUser((_, { chatId }, ctx, ast) => {
       const fields = parseQueryFields(ast);
-      return chatService.getChats({ fields });
+      if (chatId) {
+        return chatService.getOneChat({ fields, chatId });
+      }
+      return chatService.getChatsList({ fields: fields.list });
     }),
   },
 };
