@@ -61,7 +61,7 @@ exports.sendMessage = async ({ chatId, message }, userId) => {
     return { message: parsedMessage, isSuccess: !!parsedMessage };
   } catch (err) {
     throw new ApiError({
-      message: 'Unable to add message to the chat',
+      message: 'Unable to add a message to the chat',
       status: 500,
     });
   }
@@ -91,7 +91,7 @@ exports.getChatsList = async ({ fields }) => {
     const chats = await query.lean().exec();
     return { list: chats.map(chatRes) };
   } catch (err) {
-    throw new ApiError({ message: 'Unable to get all chats', status: 500 });
+    throw new ApiError({ message: 'Unable to get chats list', status: 500 });
   }
 };
 
@@ -104,6 +104,6 @@ exports.getOneChat = async ({ fields, chatId }) => {
     const chat = await query.lean().exec();
     return chatRes(chat);
   } catch (err) {
-    throw new ApiError({ message: 'Unable to get a chat', status: 500 });
+    throw new ApiError({ message: 'Unable to get the chat', status: 500 });
   }
 };
