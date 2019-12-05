@@ -2,6 +2,7 @@ const { pubsub } = require('../subscriptions');
 const chatService = require('../../services/chat');
 const { withUser, parseQueryFields } = require('../utils');
 const { actions } = require('../subscriptions');
+const { withFilter } = require('graphql-subscriptions');
 
 module.exports = {
   ChatListRes: {
@@ -25,9 +26,14 @@ module.exports = {
     },
   },
   Subscription: {
-    messageSent: {
-      resolve: payload => payload,
-      subscribe: () => pubsub.asyncIterator([actions.MESSAGE_SENT]),
+    chatMessages: {
+      resolve: payload => payload.message,
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([actions.CHAT_MESSAGE_ADDED]),
+        (payload, variables) => {
+          return payload.chatId === variables.chatId;
+        }
+      ),
     },
     chatList: {
       resolve: payload => payload,
@@ -36,21 +42,27 @@ module.exports = {
     },
   },
   Mutation: {
-    // sendMessage: (_, { message }) => {
-    //   pubsub.publish(MESSAGE_SENT, { id: `id-${Math.random()}`, message });
-    // },
     createChat: withUser(async (_, { chatSettings }, { user: { id } }) => {
       const chat = await chatService.createChat(chatSettings, id);
       pubsub.publish(actions.CHAT_ADDED, { type: 'ADDED', chat });
       return chat;
     }),
     deleteChat: withUser((_, { chatId }, { user: { id } }) => {
-      const isDeleted = chatService.deleteChat(chatId, id);
-      pubsub.publish(actions.CHAT_DELETED, { type: 'DELETED', chatId });
-      return isDeleted;
+      const isChatDeleted = chatService.deleteChat(chatId, id);
+      if (isChatDeleted) {
+        pubsub.publish(actions.CHAT_DELETED, { type: 'DELETED', chatId });
+      }
+      return isChatDeleted;
     }),
-    sendMessage: withUser((_, { data }, { user: { id } }) => {
-      return chatService.sendMessage(data, id);
+    sendMessage: withUser(async (_, { data }, { user: { id } }) => {
+      const { isSuccess, message } = await chatService.sendMessage(data, id);
+      if (isSuccess) {
+        pubsub.publish(actions.CHAT_MESSAGE_ADDED, {
+          chatId: data.chatId,
+          message,
+        });
+      }
+      return isSuccess;
     }),
   },
   Query: {

@@ -18,7 +18,7 @@ exports.subscriptions = {
 };
 
 exports.actions = {
-  MESSAGE_SENT: 'MESSAGE_SENT',
+  CHAT_MESSAGE_ADDED: 'CHAT_MESSAGE_ADDED',
   CHAT_ADDED: 'CHAT_ADDED',
   CHAT_DELETED: 'CHAT_DELETED',
 };

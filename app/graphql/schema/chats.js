@@ -2,7 +2,7 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
   type Subscription {
-    messageSent: MessageSentRes!
+    chatMessages(chatId: String!): ChatMessage!
     chatList: ChatListRes!
   }
 
@@ -39,11 +39,6 @@ module.exports = gql`
     chatId: String!
   }
 
-  type MessageSentRes {
-    message: String!
-    id: String!
-  }
-
   input CreateChatInput {
     name: String!
   }
@@ -60,6 +55,7 @@ module.exports = gql`
     id: String!
     message: String!
     from: ChatMessageFrom!
+    createdAt: String!
   }
 
   type ChatMessageFrom {

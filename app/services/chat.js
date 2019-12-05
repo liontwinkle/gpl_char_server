@@ -6,6 +6,7 @@ const { getFields } = require('./utils');
 const { makeResponse } = require('../mongoose/utils');
 
 const chatRes = makeResponse;
+const chatMessageRes = makeResponse;
 const populateByCreator = query => query.populate('creator', 'name _id');
 
 exports.createChat = async (chatSettings, userId) => {
@@ -45,9 +46,19 @@ exports.sendMessage = async ({ chatId, message }, userId) => {
   try {
     const newMessage = new chatMessageModel({ message, from: userId });
     const res = await chatModel
-      .findOneAndUpdate({ _id: chatId }, { $push: { messages: newMessage } })
+      .findOneAndUpdate(
+        { _id: chatId },
+        { $push: { messages: newMessage } },
+        {
+          fields: { messages: { $slice: -1 } },
+          new: true
+        }
+      )
+      .populate('messages.from', 'name _id')
       .exec();
-    return !!res;
+
+    const parsedMessage = chatMessageRes(res.messages[0]);
+    return { message: parsedMessage, isSuccess: !!parsedMessage };
   } catch (err) {
     throw new ApiError({
       message: 'Unable to add message to the chat',

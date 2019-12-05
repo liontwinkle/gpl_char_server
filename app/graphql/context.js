@@ -3,7 +3,7 @@ const { ApiError, getUserTokenFromRequest } = require('../utils');
 
 const contexHandler = async ({ req, connection }) => {
   if (connection) {
-    // ? passes ctx which has been built it onConnect fn in subscriptions object in apolloServer
+    // ? passes ctx which has been built in onConnect fn in subscriptions object in apolloServer
     return connection.context;
   } else {
     // ? builds context for regular query/mutations
