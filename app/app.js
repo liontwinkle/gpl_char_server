@@ -1,5 +1,4 @@
-const dotenv = require('dotenv');
-dotenv.config();
+const cfg = require('./config');
 const express = require('express');
 const mongoInit = require('./mongoose');
 const cors = require('cors');
@@ -12,7 +11,6 @@ const {
   subscriptions,
 } = require('./graphql/');
 const http = require('http');
-const cfg = require('./config');
 
 const init = async () => {
   await mongoInit();
