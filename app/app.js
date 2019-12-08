@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const mongoInit = require('./mongoose');
 const cors = require('cors');
